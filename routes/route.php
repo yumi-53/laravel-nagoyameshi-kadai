@@ -9,6 +9,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => 'auth:admin
 
     Route::resource('restaurants', Admin\RestaurantController::class);
     Route::patch('restaurants/update/{id}',[Admin\RestaurantController::class, 'update'])->name('admin.restaurants.update');
+
+    Route::resource('categories', Admin\CategoryController::class);
 });
 
 ?>
