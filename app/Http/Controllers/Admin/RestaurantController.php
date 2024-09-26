@@ -45,14 +45,14 @@ class RestaurantController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            $image_path = $request->file('image')->store('restaurants');
+            $image = $request->file('image')->store('restaurants');
         } else {
-            $image_path = '';
+            $image = '';
         }
 
         Restaurant::create([
             'name' => $request->input('name'),
-            'image' => $image_path,
+            'image' => basename($image),
             'description' => $request->input('description'),
             'lowest_price' => $request->input('lowest_price'),
             'highest_price' => $request->input('highest_price'),
@@ -96,13 +96,14 @@ class RestaurantController extends Controller
 
         $restaurant = Restaurant::find($id); 
         if ($request->hasFile('image')) {
-            $image_path = $request->file('image')->store('restaurants');
+            $image = $request->file('image')->store('restaurants');
         } else {
-            $image_path =  $restaurant->image;
+            $image =  $restaurant->image;
         }
+        
         $restaurant->update([  
             'name' => $request->input('name'),
-            'image' => basename($image_path),
+            'image' => basename($image),
             'description' => $request->input('description'),
             'lowest_price'=> $request->input('lowest_price'),
             'highest_price'=> $request->input('highest_price'),
