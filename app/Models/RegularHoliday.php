@@ -10,8 +10,8 @@ class RegularHoliday extends Model
     use HasFactory;
 
     protected $fillable = [
-        'restaurant_id',
-        'regular_holiday_id',
+        'day',
+        'day_index',
     ];
     protected $hidden = [
         'created_at',
