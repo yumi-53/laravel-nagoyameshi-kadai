@@ -6,6 +6,7 @@ use App\Models\Admin;
 use App\Models\User;
 use App\Models\Restaurant;
 use App\Models\Category;
+use App\Models\RegularHoliday;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -106,6 +107,10 @@ class RestaurantTest extends TestCase
             ]);
             array_push($categoryIds, $category->id);    
         }
+        
+        $regularHoliday = RegularHoliday::factory()->create();
+        $regularHolidayIds = [$regularHoliday->id];
+
 
         $restaurant = [
             'name' => 'TEST',
@@ -118,14 +123,21 @@ class RestaurantTest extends TestCase
             'closing_time' => '20:00:00',
             'seating_capacity' => 50,
             'category_ids' => $categoryIds,
+            'regular_holiday_ids' => $regularHolidayIds,
         ];
         $this->post(route('admin.restaurants.store'), $restaurant);
-        unset($restaurant['category_ids']);
+        unset($restaurant['category_ids'], $restaurant['regular_holiday_ids']);
         $this->assertDatabaseMissing('restaurants', $restaurant);
 
         foreach ($categoryIds as $categoryId) {
             $this->assertDatabaseMissing('category_restaurant', [
                 'category_id' => $categoryId,
+            ]);
+        }
+
+        foreach ($regularHolidayIds as $regularHolidayId) {
+            $this->assertDatabaseMissing('regular_holiday_restaurant', [
+                'regular_holiday_id ' => $regularHolidayId,
             ]);
         }
 
