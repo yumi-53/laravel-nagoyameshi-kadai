@@ -8,7 +8,7 @@ use App\Models\Term;
 
 class TermController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
         $term = Term::first();
         return view('admin.terms.index', compact('term'));
