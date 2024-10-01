@@ -108,7 +108,7 @@ class RestaurantController extends Controller
             'closing_time'=> 'required|after:opening_time',
             'seating_capacity' => 'required|numeric|min:0',
         ]);
-
+        
         $restaurant = Restaurant::find($id);
 
         if ($request->hasFile('image')) {
