@@ -60,4 +60,11 @@ class RestaurantController extends Controller
         $returnItem = ['keyword','category_id','price','sorts','sorted','restaurants','categories','total'];
         return view('restaurants.index', compact($returnItem));
     }
+
+    public function show($id)
+    {
+        $restaurant = Restaurant::find($id);
+
+        return view('restaurants/show', compact('restaurant'));
+    }
 }
