@@ -48,7 +48,7 @@ class RestaurantTest extends TestCase
     public function test_guest_cannot_access_admin_users_restaurants_show()
     {
         $restaurant = Restaurant::factory()->create();
-        $response = $this->get(route('admin.restaurants.store', $restaurant));
+        $response = $this->get(route('admin.restaurants.show', $restaurant));
         $response->assertRedirect('/admin/login');
     }
     //ログイン済みの一般ユーザーは管理者側の店舗詳細ページにアクセスできない
@@ -56,7 +56,7 @@ class RestaurantTest extends TestCase
     {
         $restaurant = Restaurant::factory()->create();
         $user = User::factory()->create();
-        $response = $this->actingAs($user)->get(route('admin.restaurants.store', $restaurant));
+        $response = $this->actingAs($user)->get(route('admin.restaurants.show', $restaurant));
         $response->assertRedirect('/admin/login');
     }
     //ログイン済みの管理者は管理者側の店舗詳細ページにアクセスできる
@@ -67,7 +67,7 @@ class RestaurantTest extends TestCase
             'email' => 'admin@example.com',
             'password' => Hash::make('nagoyameshi'),
         ]);
-        $response = $this->actingAs($admin, 'admin')->get(route('admin.restaurants.store', $restaurant));
+        $response = $this->actingAs($admin, 'admin')->get(route('admin.restaurants.show', $restaurant));
         $response->assertOk();
     }
 
