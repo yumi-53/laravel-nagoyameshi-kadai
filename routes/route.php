@@ -25,18 +25,18 @@ Route::group(['middleware' => 'guest:admin'], function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
     Route::resource('user', UserController::class)->only(['index', 'edit', 'update'])->middleware(['auth', 'verified'])->names('user');
     Route::resource('restaurants', RestaurantController::class)->only(['index', 'show']);
-}); 
 
-Route::group(['prefix' => 'subscription', 'as' => 'subscription.'], function () {
-    Route::group(['middleware' => ['auth', 'verified', 'not.subscribed']], function () {
-        Route::get('create', [SubscriptionController::class, 'create'])->name('create');
-        Route::post('/', [SubscriptionController::class, 'store'])->name('store');
+    Route::group(['prefix' => 'subscription', 'as' => 'subscription.'], function () {
+        Route::group(['middleware' => ['auth', 'verified', 'not.subscribed']], function () {
+            Route::get('create', [SubscriptionController::class, 'create'])->name('create');
+            Route::post('/', [SubscriptionController::class, 'store'])->name('store');
+        });
+        Route::group(['middleware' => ['auth', 'verified', 'subscribed']], function () {
+            Route::get('edit', [SubscriptionController::class, 'edit'])->name('edit');
+            Route::patch('update', [SubscriptionController::class, 'update'])->name('update');
+            Route::get('cancel', [SubscriptionController::class, 'cancel'])->name('cancel');
+            Route::delete('/', [SubscriptionController::class, 'destroy'])->name('destroy');
+        });
     });
-    Route::group(['middleware' => ['auth', 'verified', 'subscribed']], function () {
-        Route::get('edit', [SubscriptionController::class, 'edit'])->name('edit');
-        Route::patch('update', [SubscriptionController::class, 'update'])->name('update');
-        Route::get('cancel', [SubscriptionController::class, 'cancel'])->name('cancel');
-        Route::delete('/', [SubscriptionController::class, 'destroy'])->name('destroy');
-    });
-});
+}); 
 ?>

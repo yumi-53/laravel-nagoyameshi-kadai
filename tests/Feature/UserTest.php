@@ -98,11 +98,15 @@ class UserTest extends TestCase
     public function test_user_can_access_users_update()
     {
         $user = User::factory()->create();
-        $new_data = User::factory()->make()->toArray();
-        unset($new_data['id'], $new_data['created_at'], $new_data['updated_at'], $new_data['email_verified_at']);
-
+        $new_data = ([
+            'name' => 'test',
+            'kana' => 'テスト',
+            'email' => 'admin@example.com',
+            'postal_code' => 1234567,
+            'address' => '大阪府',
+            'phone_number' => 1111111111,
+        ]);
         $this->actingAs($user)->patch(route('user.update', $user), $new_data);
-        $user->update($new_data);
         $this->assertDatabaseHas('users', $new_data);
     }
 
