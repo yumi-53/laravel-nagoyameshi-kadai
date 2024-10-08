@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Restaurant;
 use App\Models\Category;
-use App\Models\RegularHoliday;
 
 class RestaurantController extends Controller
 {
@@ -18,7 +17,8 @@ class RestaurantController extends Controller
         
         $sorts = [
             '掲載日が新しい順' => 'created_at desc',
-            '価格が安い順' => 'lowest_price asc'
+            '価格が安い順' => 'lowest_price asc',
+            '評価が高い順' => 'rating desc',
         ];
         $sort_query = [];
         $sorted = "created_at desc";

@@ -40,6 +40,8 @@ return [
     |
     |
     */
-
+    //paginate
     'page' => 15,
+    'freemember_reviews' => 3,
+    'paidmember_reviews' => 5,
 ];
