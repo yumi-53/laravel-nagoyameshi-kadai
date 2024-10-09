@@ -80,7 +80,14 @@ class UserTest extends TestCase
     public function test_guest_cannot_access_users_update()
     {
         $old_data = User::factory()->create();
-        $new_data = User::factory()->create()->toArray();
+        $new_data = ([
+            'name' => 'test',
+            'kana' => 'テスト',
+            'email' => 'admin@example.com',
+            'postal_code' => 1234567,
+            'address' => '大阪府',
+            'phone_number' => 1111111111,
+        ]);
         $this->patch(route('user.update', $old_data), $new_data);
         $this->assertDatabaseMissing('users', $new_data);
 
@@ -90,7 +97,14 @@ class UserTest extends TestCase
     {
         $dummy_user = User::factory()->create();
         $user = User::factory()->create();
-        $new_data = User::factory()->create()->toArray();;
+        $new_data = ([
+            'name' => 'test',
+            'kana' => 'テスト',
+            'email' => 'admin@example.com',
+            'postal_code' => 1234567,
+            'address' => '大阪府',
+            'phone_number' => 1111111111,
+        ]);
         $this->actingAs($user)->patch(route('user.edit', $dummy_user), $new_data);
         $this->assertDatabaseMissing('users', $new_data);
     }
@@ -114,8 +128,14 @@ class UserTest extends TestCase
     public function test_admin_cannot_access_users_update()
     {
         $user = User::factory()->create();
-        $new_data = User::factory()->make()->toArray();
-        unset($new_data['id'], $new_data['created_at'], $new_data['updated_at'], $new_data['email_verified_at']);
+        $new_data = ([
+            'name' => 'test',
+            'kana' => 'テスト',
+            'email' => 'admin@example.com',
+            'postal_code' => 1234567,
+            'address' => '大阪府',
+            'phone_number' => 1111111111,
+        ]);
         $admin = Admin::create([
             'email' => 'admin@example.com',
             'password' => Hash::make('nagoyameshi'),

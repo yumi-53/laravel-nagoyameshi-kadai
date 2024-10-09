@@ -14,7 +14,6 @@ class ReviewController extends Controller
 {
     public function index(Restaurant $restaurant)
     {
-        //$restaurant = Restaurant::find(id);
         $user = Auth::user();
         if ($user->subscribed('premium_plan')) {
             $reviews = Review::where('restaurant_id', $restaurant->id)
@@ -45,32 +44,32 @@ class ReviewController extends Controller
             'user_id' => Auth::id(),
         ]);
 
-        return redirect()->route('restaurants.reviews.index')->with('flash_message', 'レビューを投稿しました。');
+        return redirect()->route('restaurants.reviews.index', $restaurant)->with('flash_message', 'レビューを投稿しました。');
     }
 
     public function edit(Restaurant $restaurant, Review $review)
     {
         $auth_id = Auth::id();
         if ($auth_id == $review->user_id) {
-            return view('reviews/edit', compact('restaurant', 'reviews'));
+            return view('reviews/edit', compact('restaurant', 'review'));
         } else {
-            return redirect()->route('restaurants.reviews.index')->with('error_message', '不正なアクセスです。');
+            return redirect()->route('restaurants.reviews.index', $restaurant)->with('error_message', '不正なアクセスです。');
         }
     }
 
 
-    public function update(ReviewRequest $request): RedirectResponse
+    public function update(ReviewRequest $request, Restaurant $restaurant, Review $review): RedirectResponse
     {
         $auth_id = Auth::id();
-        if ($auth_id == $request->user_id) {
-            Review::updateOrCreate([
+        if ($auth_id == $review->user_id) {
+            Review::updateOrCreate(
+                ['id' => $review->id],[
                 'score' => $request->input('score'),
                 'content' =>  $request->input('content'),
-            ]);
-            return redirect()->route('restaurants.reviews.index')->with('flash_message', 'レビューを編集しました。');
-
+                ]);
+            return redirect()->route('restaurants.reviews.index', $restaurant)->with('flash_message', 'レビューを編集しました。');
         } else {
-            return redirect()->route('restaurants.reviews.index')->with('error_message', '不正なアクセスです。');
+            return redirect()->route('restaurants.reviews.index', $restaurant)->with('error_message', '不正なアクセスです。');
         }
     }
 
@@ -79,10 +78,10 @@ class ReviewController extends Controller
     {
         $auth_id = Auth::id();
         if ($auth_id == $review->user_id) {
-            $restaurant->delete();
-            return redirect()->route('restaurants.reviews.index')->with('flash_message', 'レビューを削除しました。');
+            $review->delete();
+            return redirect()->route('restaurants.reviews.index', $restaurant)->with('flash_message', 'レビューを削除しました。');
         } else {
-            return redirect()->route('restaurants.reviews.index')->with('error_message', '不正なアクセスです。');
+            return redirect()->route('restaurants.reviews.index', $restaurant)->with('error_message', '不正なアクセスです。');
         }
     }
 
