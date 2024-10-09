@@ -6,6 +6,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\RestaurantController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\ReservationController;
 
 Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => 'auth:admin'], function () {
     Route::get('home', [Admin\HomeController::class, 'index'])->name('home');
@@ -21,24 +22,21 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => 'auth:admin
 
     Route::resource('terms', Admin\TermController::class);
 });
-// Route::middleware(['auth', 'verified', 'subscribed'])->group(function () {
-//     Route::get('restaurants/{restaurant}/reviews', [ReviewController::class, 'index'])->name('restaurants.reviews.index');
-//     Route::get('restaurants/{restaurant}/reviews/create', [ReviewController::class, 'create'])->name('restaurants.reviews.create');
-//     Route::post('restaurants/{restaurant}/reviews', [ReviewController::class, 'store'])->name('restaurants.reviews.store');
-//     Route::get('restaurants/{restaurant}/reviews/{review}/edit', [ReviewController::class, 'edit'])->name('restaurants.reviews.edit');
-//     Route::patch('restaurants/{restaurant}/reviews/{review}', [ReviewController::class, 'update'])->name('restaurants.reviews.update');
-//     Route::delete('restaurants/{restaurant}/reviews/{review}', [ReviewController::class, 'destroy'])->name('restaurants.reviews.destroy');
-
-// });
 
 Route::group(['middleware' => 'guest:admin'], function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
     Route::resource('user', UserController::class)->only(['index', 'edit', 'update'])->middleware(['auth', 'verified'])->names('user');
     Route::resource('restaurants', RestaurantController::class)->only(['index', 'show']);
-
-    Route::resource('restaurants/{restaurant}/reviews', ReviewController::class)->except(['index'])->middleware(['auth', 'verified', 'subscribed'])->names('restaurants.reviews');
-    Route::get('restaurants/{restaurant}/reviews', [ReviewController::class, 'index'])->middleware(['auth', 'verified'])->name('restaurants.reviews.index');
     
+    Route::get('restaurants/{restaurant}/reviews', [ReviewController::class, 'index'])->middleware(['auth', 'verified'])->name('restaurants.reviews.index');
+
+    Route::group(['middleware' => ['auth', 'verified', 'subscribed']], function () {
+        Route::resource('restaurants/{restaurant}/reviews', ReviewController::class)->except(['index'])->names('restaurants.reviews');  
+    
+        Route::resource('reservations', ReservationController::class)->only(['index', 'destroy'])->names('reservations');
+        Route::resource('restaurants/{restaurant}/reservations', ReservationController::class)->only(['create', 'store'])->names('restaurants.reservations');
+    });
+
     Route::group(['prefix' => 'subscription', 'as' => 'subscription.'], function () {
         Route::group(['middleware' => ['auth', 'verified', 'not.subscribed']], function () {
             Route::get('create', [SubscriptionController::class, 'create'])->name('create');
