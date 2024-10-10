@@ -7,6 +7,7 @@ use App\Http\Controllers\RestaurantController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\FavoriteController;
 
 Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => 'auth:admin'], function () {
     Route::get('home', [Admin\HomeController::class, 'index'])->name('home');
@@ -35,6 +36,10 @@ Route::group(['middleware' => 'guest:admin'], function () {
     
         Route::resource('reservations', ReservationController::class)->only(['index', 'destroy'])->names('reservations');
         Route::resource('restaurants/{restaurant}/reservations', ReservationController::class)->only(['create', 'store'])->names('restaurants.reservations');
+
+        Route::get('favorites', [FavoriteController::class, 'index'])->name('favorites.index');
+        Route::post('favorites/{restaurant_id}', [FavoriteController::class, 'store'])->name('favorites.store');
+        Route::delete('favorites/{restaurant_id}', [FavoriteController::class, 'destroy'])->name('favorites.destroy');
     });
 
     Route::group(['prefix' => 'subscription', 'as' => 'subscription.'], function () {
