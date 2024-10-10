@@ -18,7 +18,7 @@ class ReservationController extends Controller
     {
         $user_id = Auth::id();
         $reservations = Reservation::Where('user_id', $user_id)
-                                    ->orderBy('created_at', 'desc')
+                                    ->orderBy('reservation_datetime', 'desc')
                                     ->paginate(config('view.page'));
         
         return view('reservations.index', compact('reservations'));
