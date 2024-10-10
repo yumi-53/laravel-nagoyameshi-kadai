@@ -8,6 +8,8 @@ use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\FavoriteController;
+use App\Http\Controllers\TermController;
+use App\Http\Controllers\CompanyController;
 
 Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => 'auth:admin'], function () {
     Route::get('home', [Admin\HomeController::class, 'index'])->name('home');
@@ -30,6 +32,10 @@ Route::group(['middleware' => 'guest:admin'], function () {
     Route::resource('restaurants', RestaurantController::class)->only(['index', 'show']);
     
     Route::get('restaurants/{restaurant}/reviews', [ReviewController::class, 'index'])->middleware(['auth', 'verified'])->name('restaurants.reviews.index');
+
+    Route::get('company', [CompanyController::class, 'index'])->name('company.index');
+
+    Route::get('terms', [TermController::class, 'index'])->name('terms.index');
 
     Route::group(['middleware' => ['auth', 'verified', 'subscribed']], function () {
         Route::resource('restaurants/{restaurant}/reviews', ReviewController::class)->except(['index'])->names('restaurants.reviews');  
